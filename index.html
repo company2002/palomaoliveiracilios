@@ -58,13 +58,6 @@
       .hero-overlay {
         background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
       }
-      .hero-bg {
-        background-image: url('https://i.imgur.com/sNytL0n.jpeg');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-color: white;
-      }
       .glass-nav {
         background: rgba(255, 255, 255, 0.95);
         -webkit-backdrop-filter: blur(10px);
@@ -117,11 +110,6 @@
 
       /* Ajustes Específicos Mobile */
       @media (max-width: 768px) {
-        .hero-bg {
-          background-color: white !important;
-          background-size: cover !important;
-          background-position: center center !important;
-        }
         .container {
             padding-left: 1.25rem; /* px-5 */
             padding-right: 1.25rem;
@@ -179,8 +167,9 @@
     <!-- Hero Section -->
     <section id="home" class="relative h-[85vh] md:h-screen flex items-center justify-center">
       <div class="absolute inset-0 z-0">
-        <div class="w-full h-full hero-bg opacity-90 md:opacity-80 transition-all duration-500">
-        </div>
+        <video class="w-full h-full object-cover opacity-90 md:opacity-80 transition-all duration-500" autoplay muted loop>
+          <source src="https://i.imgur.com/IW1Jpr6.mp4" type="video/mp4">
+        </video>
         <div class="hero-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-black/30"></div>
       </div>
       
