@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paloma Designer de Cílios - Agendamento</title>
+
+    <meta property="og:title" content="Paloma Designer de Cílios">
+    <meta property="og:description" content="Alongamento de cílios • Beleza e autoestima">
+    <meta property="og:image" content="https://i.imgur.com/mUSAf6v.jpeg">
+    <meta property="og:url" content="https://company2002.github.io/palomaciliosslash/">
+    <meta property="og:type" content="website">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#D4A373",
+              secondary: "#FAEuE1",
+              accent: "#BC6C25",
+              dark: "#2C1810",
+              rose: "#FCE7F3",
+              bglight: "#FFFCF9",
+            },
+            fontFamily: {
+              serif: ['"Cormorant Garamond"', "serif"],
+              sans: ['"Lato"', "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      html { scroll-behavior: smooth; }
+      .fade-in-up {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      }
+      .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .hero-overlay {
+        background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+      }
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      }
+      
+      /* Calendar Styles */
+      .calendar-day {
+        transition: all 0.2s;
+        cursor: pointer;
+        aspect-ratio: 1; /* Garante que os dias sejam quadrados */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .calendar-day:hover:not(.disabled) {
+        background-color: #FCE7F3;
+        color: #BC6C25;
+      }
+      .calendar-day.selected {
+        background-color: #D4A373;
+        color: white;
+      }
+      .calendar-day.disabled {
+        color: #ccc;
+        cursor: not-allowed;
+        background-color: #f9f9f9;
+      }
+      .time-slot {
+        border: 1px solid #D4A373;
+        color: #D4A373;
+        transition: all 0.2s;
+      }
+      .time-slot:hover {
+        background-color: #FCE7F3;
+      }
+      .time-slot.selected {
+        background-color: #D4A373;
+        color: white;
+      }
+
+      /* Ajustes Específicos Mobile */
+      @media (max-width: 768px) {
+        .hero-bg {
+          background-color: white !important;
+          background-size: cover !important;
+          background-position: center center !important;
+        }
+        .container {
+            padding-left: 1.25rem; /* px-5 */
+            padding-right: 1.25rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="font-sans text-dark bg-secondary selection:bg-primary selection:text-white">
+    
+    <!-- Navbar -->
+    <header class="fixed w-full top-0 z-50 glass-nav transition-all duration-300" id="navbar">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="text-2xl md:text-3xl font-serif font-bold text-accent tracking-wide z-50 relative">
+          Paloma<span class="text-primary">Cílios</span>
+        </a>
+        
+        <!-- Desktop Menu -->
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="#home" class="text-dark hover:text-primary transition font-medium">Início</a>
+          <a href="#sobre" class="text-dark hover:text-primary transition font-medium">Sobre</a>
+          <a href="#servicos" class="text-dark hover:text-primary transition font-medium">Serviços</a>
+          <a href="#galeria" class="text-dark hover:text-primary transition font-medium">Galeria</a>
+          <a href="#agendamento-online" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-accent transition transform hover:scale-105 shadow-md">Agendar</a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none z-50 relative p-2" aria-label="Menu">
+          <i data-lucide="menu" class="w-8 h-8"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Dropdown -->
+      <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-8 text-center transition-opacity duration-300">
+        <a href="#home" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Início</a>
+        <a href="#sobre" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Sobre</a>
+        <a href="#servicos" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Serviços</a>
+        <a href="#galeria" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Galeria</a>
+        <a href="#agendamento-online" class="text-2xl font-bold text-primary font-serif" onclick="toggleMenu()">Agendar Agora</a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-[85vh] md:h-screen flex items-center justify-center">
+      <div class="absolute inset-0 z-0">
+        <div class="w-full h-full hero-bg opacity-90 md:opacity-80 transition-all duration-500"
+             style="background-image: url('https://i.imgur.com/sNytL0n.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: white;">
+        </div>
+        <div class="hero-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-black/30"></div>
+      </div>
+      
+      <div class="container mx-auto px-6 relative z-10 text-center text-white fade-in-up flex flex-col justify-center h-full pb-20">
+        <!-- Título vazio no original, mantido estrutura para espaçamento -->
+      </div>
+
+      <!-- Botões Hero -->
+      <div class="absolute left-0 right-0 bottom-8 md:bottom-12 z-20 flex flex-col sm:flex-row gap-4 w-full justify-center items-center px-6">
+        <a href="#agendamento-online" class="w-full sm:w-auto bg-primary hover:bg-accent text-white px-8 py-4 rounded-full text-lg font-medium transition shadow-lg flex items-center justify-center gap-2 transform active:scale-95">
+          <i data-lucide="calendar"></i> Agendar Horário
+        </a>
+        <a href="https://www.instagram.com/paloma_cilioslash" target="_blank" class="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 text-white px-8 py-4 rounded-full text-lg font-medium transition shadow-lg flex items-center justify-center gap-2">
+            <i data-lucide="instagram"></i> Instagram
+        </a>
+      </div>
+    </section>
+
+    <!-- Sobre Mim -->
+    <section id="sobre" class="py-16 md:py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div class="w-full md:w-1/2 relative fade-in-up order-2 md:order-1">
+            <div class="absolute top-4 -left-4 w-full h-full border-2 border-primary rounded-lg z-0 hidden md:block"></div>
+            <!-- Altura ajustada para mobile: h-72 -->
+            <img src="https://i.imgur.com/CkOdEvw.jpeg" onerror="this.src='https://placehold.co/800x600/D4A373/FFF?text=Sobre+a+Profissional'" alt="Lash Designer" class="relative z-10 w-full h-72 md:h-[500px] object-cover rounded-lg shadow-xl bg-gray-100" />
+          </div>
+          <div class="w-full md:w-1/2 fade-in-up order-1 md:order-2">
+            <h4 class="text-primary font-bold tracking-widest uppercase mb-2 text-sm md:text-base">Sobre Mim</h4>
+            <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4 md:mb-6 text-dark leading-tight">Dedicada à arte de realçar olhares</h2>
+            <p class="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">Olá! Sou Paloma, Lash Designer certificada com mais de 5 anos de experiência. Minha missão vai além de apenas aplicar fios; eu estudo a simetria do seu rosto (visagismo) para criar um design único.</p>
+            <div class="grid grid-cols-2 gap-4 md:gap-6">
+              <div class="flex items-center gap-3">
+                <div class="bg-rose p-2 md:p-3 rounded-full text-primary shrink-0"><i data-lucide="award" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                <span class="font-medium text-sm md:text-base">Certificada</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="bg-rose p-2 md:p-3 rounded-full text-primary shrink-0"><i data-lucide="heart" class="w-5 h-5 md:w-6 md:h-6"></i></div>
+                <span class="font-medium text-sm md:text-base">Material Premium</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="servicos" class="py-16 md:py-20 bg-secondary">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-12 fade-in-up">
+          <h4 class="text-primary font-bold tracking-widest uppercase mb-2 text-sm">Nossas Técnicas</h4>
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-dark">Menu de Serviços</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            
+            <!-- Cards Padronizados -->
+            <!-- Fio a Fio -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="eye" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Fio a Fio Clássico</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Técnica natural. Um fio sintético sobre um fio natural, efeito rímel impecável.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 110,00</span>
+                    <button onclick="preSelectService('Fio a Fio Clássico')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Volume Brasileiro -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="sparkles" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Volume Brasileiro</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Fios em formato de Y que garantem preenchimento e textura.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 120,00</span>
+                    <button onclick="preSelectService('Volume Brasileiro')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Cílios Postiços -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="crown" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Cílios Postiços</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Aplicação de cílios postiços para um look instantâneo.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 20,00</span>
+                    <button onclick="preSelectService('Cílios Postiços')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Tufinho 10 P -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="layers" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Tufinho 10 P</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Volume e definição discretos para um olhar marcante.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 50,00</span>
+                    <button onclick="preSelectService('Tufinho 10P')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Tufinho 20 P -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="layers" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Tufinho 20 P</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Mais volume e definição média.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 55,00</span>
+                    <button onclick="preSelectService('Tufinho 20P')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Tufinho 40 P -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="layers" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Tufinho 40 P</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Volume máximo para um destaque total.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 60,00</span>
+                    <button onclick="preSelectService('Tufinho 40P')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Efeito Rímel -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="crown" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Cílios Efeito Rímel</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Cílios mais grossos e longos simulando rímel.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 100,00</span>
+                    <button onclick="preSelectService('Cílios Efeito Rímel')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Remoção -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary">
+                <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center mb-6 text-primary"><i data-lucide="trash-2" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                <h3 class="text-xl md:text-2xl font-serif font-bold mb-3">Remoção de Cílios</h3>
+                <p class="text-gray-600 mb-4 text-sm md:text-base">Remoção cuidadosa garantindo a saúde dos fios naturais.</p>
+                <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100">
+                    <span class="text-xl md:text-2xl font-bold text-accent">R$ 30,00</span>
+                    <button onclick="preSelectService('Remoção de Cílios')" class="bg-primary text-white px-4 py-2 md:px-6 rounded-full hover:bg-accent transition shadow-md font-bold text-xs md:text-sm uppercase">Agendar</button>
+                </div>
+            </div>
+
+            <!-- Manutenção (Card Largo) -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 fade-in-up border-b-4 border-primary lg:col-span-3 md:col-span-2">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-6 w-full md:w-auto">
+                        <div class="h-14 w-14 md:h-16 md:w-16 bg-rose rounded-full flex items-center justify-center text-primary shrink-0"><i data-lucide="repeat" class="w-6 h-6 md:w-8 md:h-8"></i></div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-serif font-bold mb-1">Manutenção</h3>
+                            <p class="text-gray-600 text-sm md:text-base">Recomendada entre 15 a 21 dias.</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg md:text-xl font-bold text-gray-500">A partir de</span>
+                            <span class="text-2xl md:text-3xl font-bold text-accent">R$ 80,00</span>
+                        </div>
+                        <button onclick="preSelectService('Manutenção')" class="w-full md:w-auto bg-primary text-white px-6 py-3 md:py-2 rounded-full hover:bg-accent transition shadow-md font-bold text-sm uppercase text-center">Agendar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Galeria -->
+    <section id="galeria" class="py-16 md:py-20 bg-white">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-10 md:mb-12 fade-in-up">
+          <h2 class="text-3xl md:text-4xl font-serif font-bold text-dark mb-4">Paloma Oliveira</h2>
+          <p class="text-gray-600">Toque na imagem e descubra o tipo de cílios.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <div class="relative group overflow-hidden rounded-lg aspect-square fade-in-up bg-gray-100">
+                <img src="https://i.imgur.com/T0HhgnT.jpeg" onerror="this.src='https://placehold.co/400x400/D4A373/FFF?text=Volume+Russo'" class="object-cover w-full h-full transition duration-500 group-hover:scale-110" alt="Resultado">
+                <div class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-serif text-sm md:text-xl text-center px-2">Cílios Tufinho</span>
+                </div>
+            </div>
+            <div class="relative group overflow-hidden rounded-lg aspect-square fade-in-up bg-gray-100">
+                <img src="https://i.imgur.com/o3RIxKM.jpeg" onerror="this.src='https://placehold.co/400x400/D4A373/FFF?text=Fio+a+Fio'" class="object-cover w-full h-full transition duration-500 group-hover:scale-110" alt="Resultado">
+                <div class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-serif text-sm md:text-xl text-center px-2">Fio a Fio</span>
+                </div>
+            </div>
+            <div class="relative group overflow-hidden rounded-lg aspect-square fade-in-up bg-gray-100">
+                <img src="https://i.imgur.com/bLORhxu.jpeg" onerror="this.src='https://placehold.co/400x400/D4A373/FFF?text=Brasileiro'" class="object-cover w-full h-full transition duration-500 group-hover:scale-110" alt="Resultado">
+                <div class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-serif text-sm md:text-xl text-center px-2">Brasileiro</span>
+                </div>
+            </div>
+            <div class="relative group overflow-hidden rounded-lg aspect-square fade-in-up bg-gray-100">
+                <img src="https://i.imgur.com/P7e2Rdr.jpeg" onerror="this.src='https://placehold.co/400x400/D4A373/FFF?text=Mega+Volume'" class="object-cover w-full h-full transition duration-500 group-hover:scale-110" alt="Resultado">
+                <div class="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                    <span class="text-white font-serif text-sm md:text-xl text-center px-2">Mega Volume</span>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section class="py-16 md:py-20 bg-primary/10">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-serif font-bold text-dark mb-10 md:mb-12">O que dizem as clientes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <!-- Depoimento 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm fade-in-up">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Simplesmente amei o Cílios postiços! A durabilidade é incrível e não incomoda nada."</p>
+                    <h5 class="font-bold text-dark">- Mariana Costa</h5>
+                </div>
+                <!-- Depoimento 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm fade-in-up">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Já fiz cílios em vários lugares, mas nenhum se compara à qualidade daqui. O Cílios efeito Rímel fica perfeito!"</p>
+                    <h5 class="font-bold text-dark">- Beatriz Silva</h5>
+                </div>
+                <!-- Depoimento 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm fade-in-up">
+                    <div class="flex justify-center text-yellow-400 mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"Profissional super atenciosa, explicou tudo sobre os cuidados. Me senti muito segura e o resultado ficou lindo."</p>
+                    <h5 class="font-bold text-dark">- Carla Nunes</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AGENDAMENTO ONLINE (Responsivo & Restaurado) -->
+    <section id="agendamento-online" class="py-16 md:py-20 bg-dark text-white relative overflow-hidden scroll-mt-20">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-8 md:mb-10 fade-in-up">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-primary mb-6">Vamos agendar seu horário?</h2>
+                <p class="text-gray-300 mt-4 max-w-2xl mx-auto text-lg md:text-xl">
+                    Não perca tempo com rímel todos os dias. Acorde pronta e maravilhosa. Selecione seu horário abaixo:
+                </p>
+                
+                <!-- Informações de Contato Originais Restauradas -->
+                <div class="flex flex-col items-center justify-center gap-4 mt-8 text-base md:text-lg text-gray-300">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-primary/20 p-2 rounded-full"><i data-lucide="map-pin" class="text-primary w-5 h-5"></i></div>
+                        <span>Av general Cândido da Silva 29 Inhaúma - RJ</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-4">
+                         <div class="flex items-center gap-3">
+                            <div class="bg-primary/20 p-2 rounded-full"><i data-lucide="clock" class="text-primary w-5 h-5"></i></div>
+                            <span>Terça a Sábado: 09h às 19h</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-primary/20 p-2 rounded-full"><i data-lucide="phone" class="text-primary w-5 h-5"></i></div>
+                            <span>(21) 99437-4107</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-700 text-dark">
+                
+                <!-- Coluna 1: Calendário -->
+                <div class="w-full lg:w-1/2 p-6 md:p-8 bg-gray-50">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg md:text-xl font-bold text-dark" id="currentMonthYear">Outubro 2024</h3>
+                        <div class="flex gap-2">
+                            <button onclick="changeMonth(-1)" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-left"></i></button>
+                            <button onclick="changeMonth(1)" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 text-center mb-2 text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wide">
+                        <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                    </div>
+                    
+                    <div id="calendar-grid" class="grid grid-cols-7 text-center gap-1 md:gap-2">
+                        <!-- JS vai preencher aqui -->
+                    </div>
+
+                    <div class="mt-6 p-4 bg-rose/50 rounded-lg flex items-start gap-3 text-xs md:text-sm text-dark">
+                        <i data-lucide="info" class="w-4 h-4 md:w-5 md:h-5 text-primary shrink-0"></i>
+                        <p>Os dias em cinza estão indisponíveis. Selecione uma data colorida para ver horários.</p>
+                    </div>
+                </div>
+
+                <!-- Coluna 2: Detalhes -->
+                <div class="w-full lg:w-1/2 p-6 md:p-8 bg-white flex flex-col">
+                    
+                    <!-- 1. Seleção de Serviço -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">1. Qual procedimento?</label>
+                        <select id="serviceSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary bg-white text-base">
+                            <option value="">Selecione um serviço...</option>
+                            <option value="Fio a Fio Clássico">Fio a Fio Clássico - R$ 110,00</option>
+                            <option value="Volume Brasileiro">Volume Brasileiro - R$ 120,00</option>
+                            <option value="Cílios Efeito Rímel">Cílios Efeito Rímel - R$ 100,00</option>
+                            <option value="Tufinho 10P">Tufinho 10P - R$ 50,00</option>
+                            <option value="Tufinho 20P">Tufinho 20P - R$ 55,00</option>
+                            <option value="Tufinho 40P">Tufinho 40P - R$ 60,00</option>
+                            <option value="Cílios Postiços">Cílios Postiços - R$ 20,00</option>
+                            <option value="Remoção de Cílios">Remoção de Cílios - R$ 30,00</option>
+                            <option value="Manutenção">Manutenção - A partir de R$ 80,00</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Seleção de Horário -->
+                    <div id="timeSection" class="mb-6 opacity-50 pointer-events-none transition-opacity">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">2. Horários para <span id="selectedDateDisplay" class="text-primary">...</span></label>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 md:gap-3" id="timeSlotsContainer">
+                            <!-- JS vai preencher aqui -->
+                        </div>
+                    </div>
+
+                    <!-- 3. Dados e Botão -->
+                    <div class="mt-auto pt-6 border-t border-gray-200">
+                        <div class="mb-4">
+                            <input type="text" id="clientName" placeholder="Seu Nome Completo" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary mb-3 text-base">
+                        </div>
+                        <button onclick="finalizeBooking()" id="btnAgendar" class="w-full bg-green-500 text-white font-bold py-4 rounded-lg hover:bg-green-600 transition transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2" disabled>
+                            <i data-lucide="message-circle"></i> Confirmar no WhatsApp
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-gray-400 py-8 border-t border-gray-800 text-center md:text-left">
+      <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="text-lg font-serif font-bold text-white">
+          Paloma Oliveira<span class="text-primary">CíliosSlash</span>
+        </div>
+        <div class="text-sm">© 2024 Paloma Designer de Cílios.</div>
+        <div class="flex gap-4">
+          <a href="https://www.instagram.com/paloma_cilioslash" class="hover:text-primary transition"><i data-lucide="instagram"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5521994374107" target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-green-600 transition-all z-50 flex items-center justify-center transform hover:scale-110">
+      <i data-lucide="message-circle" class="w-6 h-6 md:w-8 md:h-8"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script>
+      lucide.createIcons();
+
+      // Mobile Menu Logic
+      function toggleMenu() {
+        const menu = document.getElementById("mobile-menu");
+        const btn = document.getElementById("mobile-menu-btn");
+        const isOpen = !menu.classList.contains("hidden");
+        
+        if (isOpen) {
+            menu.classList.add("hidden");
+            btn.innerHTML = '<i data-lucide="menu" class="w-8 h-8"></i>';
+        } else {
+            menu.classList.remove("hidden");
+            btn.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+        }
+        lucide.createIcons();
+      }
+      document.getElementById("mobile-menu-btn").addEventListener("click", toggleMenu);
+
+      // Scroll Animation
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".fade-in-up").forEach((el) => observer.observe(el));
+
+      // --- LÓGICA DO AGENDAMENTO --- //
+      
+      let currentDate = new Date();
+      let selectedDate = null;
+      let selectedTime = null;
+      const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+      
+      const availableTimes = ["09:00", "10:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
+
+      function initCalendar() {
+        renderCalendar();
+      }
+
+      function changeMonth(step) {
+        currentDate.setMonth(currentDate.getMonth() + step);
+        renderCalendar();
+      }
+
+      function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        document.getElementById("currentMonthYear").innerText = `${monthNames[month]} ${year}`;
+        
+        const firstDayIndex = new Date(year, month, 1).getDay(); // Dia da semana do dia 1
+        const lastDay = new Date(year, month + 1, 0).getDate(); // Último dia do mês
+        
+        const grid = document.getElementById("calendar-grid");
+        grid.innerHTML = "";
+        
+        for (let i = 0; i < firstDayIndex; i++) {
+            const div = document.createElement("div");
+            grid.appendChild(div);
+        }
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        for (let i = 1; i <= lastDay; i++) {
+            const date = new Date(year, month, i);
+            const dayDiv = document.createElement("div");
+            dayDiv.innerText = i;
+            dayDiv.classList.add("rounded-lg", "calendar-day", "font-medium", "text-sm", "md:text-base"); // Responsivo
+            
+            const isWorkDay = date.getDay() !== 0 && date.getDay() !== 1; 
+
+            if (date < today || !isWorkDay) {
+                dayDiv.classList.add("disabled");
+            } else {
+                dayDiv.onclick = () => selectDate(date, dayDiv);
+                if (selectedDate && date.getTime() === selectedDate.getTime()) {
+                    dayDiv.classList.add("selected");
+                }
+            }
+            grid.appendChild(dayDiv);
+        }
+      }
+
+      function selectDate(date, element) {
+        document.querySelectorAll(".calendar-day").forEach(el => el.classList.remove("selected"));
+        selectedDate = date;
+        element.classList.add("selected");
+        
+        const timeSection = document.getElementById("timeSection");
+        timeSection.classList.remove("opacity-50", "pointer-events-none");
+        
+        const dateStr = date.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+        document.getElementById("selectedDateDisplay").innerText = dateStr;
+        
+        renderTimeSlots();
+        checkFormValidity();
+      }
+
+      function renderTimeSlots() {
+        const container = document.getElementById("timeSlotsContainer");
+        container.innerHTML = "";
+        selectedTime = null; 
+        
+        availableTimes.forEach(time => {
+            const btn = document.createElement("button");
+            btn.innerText = time;
+            btn.classList.add("time-slot", "py-2", "rounded-md", "text-sm", "font-bold", "hover:shadow-sm");
+            btn.onclick = () => selectTime(time, btn);
+            container.appendChild(btn);
+        });
+        checkFormValidity();
+      }
+
+      function selectTime(time, element) {
+        document.querySelectorAll(".time-slot").forEach(el => el.classList.remove("selected"));
+        element.classList.add("selected");
+        selectedTime = time;
+        checkFormValidity();
+      }
+
+      function preSelectService(serviceName) {
+        const select = document.getElementById("serviceSelect");
+        select.value = serviceName;
+        document.getElementById("agendamento-online").scrollIntoView({ behavior: 'smooth' });
+        checkFormValidity();
+      }
+
+      document.getElementById("serviceSelect").addEventListener("change", checkFormValidity);
+      document.getElementById("clientName").addEventListener("input", checkFormValidity);
+
+      function checkFormValidity() {
+        const service = document.getElementById("serviceSelect").value;
+        const name = document.getElementById("clientName").value;
+        const btn = document.getElementById("btnAgendar");
+        
+        if (service && selectedDate && selectedTime && name.trim() !== "") {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+      }
+
+      function finalizeBooking() {
+        const service = document.getElementById("serviceSelect").value;
+        const name = document.getElementById("clientName").value;
+        const dateStr = selectedDate.toLocaleDateString('pt-BR');
+        
+        const message = `Olá Paloma! Gostaria de confirmar um agendamento.%0A%0A*Cliente:* ${name}%0A*Serviço:* ${service}%0A*Data:* ${dateStr}%0A*Horário:* ${selectedTime}%0A%0AAguardo confirmação!`;
+        
+        window.open(`https://wa.me/5521994374107?text=${message}`, '_blank');
+      }
+
+      initCalendar();
+    </script>
+  </body>
+</html>
