@@ -8,7 +8,7 @@
     <meta property="og:title" content="Paloma Designer de Cílios">
     <meta property="og:description" content="Alongamento de cílios • Beleza e autoestima">
     <meta property="og:image" content="https://i.imgur.com/mUSAf6v.jpeg">
-    <meta property="og:url" content="https://company2002.github.io/palomaciliosslash/">
+    <meta property="og:url" content="https://company2002.github.io/palomaoliveiracilios/">
     <meta property="og:type" content="website">
 
     <!-- Tailwind CSS -->
@@ -58,8 +58,16 @@
       .hero-overlay {
         background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
       }
+      .hero-bg {
+        background-image: url('https://i.imgur.com/sNytL0n.jpeg');
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: white;
+      }
       .glass-nav {
         background: rgba(255, 255, 255, 0.95);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
       }
@@ -99,6 +107,14 @@
         color: white;
       }
 
+      body.menu-open{
+  overflow: hidden;
+}
+
+
+  
+
+
       /* Ajustes Específicos Mobile */
       @media (max-width: 768px) {
         .hero-bg {
@@ -132,26 +148,38 @@
         </nav>
 
         <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none z-50 relative p-2" aria-label="Menu">
+        <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none z-50 relative p-2 bg-white" aria-label="Menu">
           <i data-lucide="menu" class="w-8 h-8"></i>
         </button>
       </div>
 
-      <!-- Mobile Menu Dropdown -->
-      <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-8 text-center transition-opacity duration-300">
-        <a href="#home" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Início</a>
-        <a href="#sobre" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Sobre</a>
-        <a href="#servicos" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Serviços</a>
-        <a href="#galeria" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Galeria</a>
-        <a href="#agendamento-online" class="text-2xl font-bold text-primary font-serif" onclick="toggleMenu()">Agendar Agora</a>
-      </div>
-    </header>
+      
+
+    </header> 
+
+</header>
+
+<!-- Mobile Menu Dropdown (FORA DO HEADER) -->
+<div id="mobile-menu"
+     class="fixed top-0 left-0 w-64 h-screen bg-white z-60 flex flex-col items-center justify-center space-y-8 text-center transition-transform duration-300 transform -translate-x-full"
+     style="z-index:9999;">
+  <button onclick="toggleMenu()" class="absolute top-4 right-4 text-dark hover:text-primary transition" aria-label="Fechar menu">
+    <i data-lucide="x" class="w-8 h-8"></i>
+  </button>
+
+  <a href="#home" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Início</a>
+  <a href="#sobre" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Sobre</a>
+  <a href="#servicos" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Serviços</a>
+  <a href="#galeria" class="text-2xl text-dark hover:text-primary font-serif" onclick="toggleMenu()">Galeria</a>
+  <a href="#agendamento-online" class="text-2xl font-bold text-primary font-serif" onclick="toggleMenu()">Agendar Agora</a>
+
+</div>
+
 
     <!-- Hero Section -->
     <section id="home" class="relative h-[85vh] md:h-screen flex items-center justify-center">
       <div class="absolute inset-0 z-0">
-        <div class="w-full h-full hero-bg opacity-90 md:opacity-80 transition-all duration-500"
-             style="background-image: url('https://i.imgur.com/sNytL0n.jpeg'); background-size: contain; background-position: center; background-repeat: no-repeat; background-color: white;">
+        <div class="w-full h-full hero-bg opacity-90 md:opacity-80 transition-all duration-500">
         </div>
         <div class="hero-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-black/30"></div>
       </div>
@@ -165,7 +193,7 @@
         <a href="#agendamento-online" class="w-full sm:w-auto bg-primary hover:bg-accent text-white px-8 py-4 rounded-full text-lg font-medium transition shadow-lg flex items-center justify-center gap-2 transform active:scale-95">
           <i data-lucide="calendar"></i> Agendar Horário
         </a>
-        <a href="https://www.instagram.com/paloma_cilioslash" target="_blank" class="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 text-white px-8 py-4 rounded-full text-lg font-medium transition shadow-lg flex items-center justify-center gap-2">
+        <a href="https://www.instagram.com/paloma_cilioslash" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 text-white px-8 py-4 rounded-full text-lg font-medium transition shadow-lg flex items-center justify-center gap-2">
             <i data-lucide="instagram"></i> Instagram
         </a>
       </div>
@@ -424,8 +452,8 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg md:text-xl font-bold text-dark" id="currentMonthYear">Outubro 2024</h3>
                         <div class="flex gap-2">
-                            <button onclick="changeMonth(-1)" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-left"></i></button>
-                            <button onclick="changeMonth(1)" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-right"></i></button>
+                            <button onclick="changeMonth(-1)" aria-label="Mês anterior" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-left"></i></button>
+                            <button onclick="changeMonth(1)" aria-label="Próximo mês" class="p-2 hover:bg-gray-200 rounded-full text-dark"><i data-lucide="chevron-right"></i></button>
                         </div>
                     </div>
                     
@@ -449,7 +477,7 @@
                     <!-- 1. Seleção de Serviço -->
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-700 mb-2">1. Qual procedimento?</label>
-                        <select id="serviceSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary bg-white text-base">
+                        <select id="serviceSelect" aria-label="Selecionar serviço" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-primary bg-white text-base">
                             <option value="">Selecione um serviço...</option>
                             <option value="Fio a Fio Clássico">Fio a Fio Clássico - R$ 110,00</option>
                             <option value="Volume Brasileiro">Volume Brasileiro - R$ 120,00</option>
@@ -494,13 +522,13 @@
         </div>
         <div class="text-sm">© 2024 Paloma Designer de Cílios.</div>
         <div class="flex gap-4">
-          <a href="https://www.instagram.com/paloma_cilioslash" class="hover:text-primary transition"><i data-lucide="instagram"></i></a>
+          <a href="https://www.instagram.com/paloma_cilioslash" aria-label="Instagram" class="hover:text-primary transition"><i data-lucide="instagram"></i></a>
         </div>
       </div>
     </footer>
 
     <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/5521994374107" target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-green-600 transition-all z-50 flex items-center justify-center transform hover:scale-110">
+    <a href="https://wa.me/5521994374107" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="fixed bottom-6 right-6 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-2xl hover:bg-green-600 transition-all z-50 flex items-center justify-center transform hover:scale-110">
       <i data-lucide="message-circle" class="w-6 h-6 md:w-8 md:h-8"></i>
     </a>
 
@@ -510,19 +538,23 @@
 
       // Mobile Menu Logic
       function toggleMenu() {
-        const menu = document.getElementById("mobile-menu");
-        const btn = document.getElementById("mobile-menu-btn");
-        const isOpen = !menu.classList.contains("hidden");
-        
-        if (isOpen) {
-            menu.classList.add("hidden");
-            btn.innerHTML = '<i data-lucide="menu" class="w-8 h-8"></i>';
-        } else {
-            menu.classList.remove("hidden");
-            btn.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
-        }
-        lucide.createIcons();
-      }
+  const menu = document.getElementById("mobile-menu");
+  const btn = document.getElementById("mobile-menu-btn");
+  const isOpen = !menu.classList.contains("-translate-x-full");
+
+  if (isOpen) {
+      menu.classList.add("-translate-x-full");
+      document.body.classList.remove("menu-open");
+      btn.innerHTML = '<i data-lucide="menu" class="w-8 h-8"></i>';
+  } else {
+      menu.classList.remove("-translate-x-full");
+      document.body.classList.add("menu-open");
+      btn.innerHTML = '<i data-lucide="x" class="w-8 h-8"></i>';
+  }
+
+  lucide.createIcons();
+}
+
       document.getElementById("mobile-menu-btn").addEventListener("click", toggleMenu);
 
       // Scroll Animation
