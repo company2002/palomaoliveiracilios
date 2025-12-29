@@ -7,7 +7,7 @@
 
     <meta property="og:title" content="Paloma Designer de Cílios">
     <meta property="og:description" content="Alongamento de cílios • Beleza e autoestima">
-    <meta property="og:image" content="https://i.imgur.com/HLHC43Z.jpeg">
+    <meta property="og:image" content="https://i.imgur.com/mUSAf6v.jpeg">
     <meta property="og:url" content="https://company2002.github.io/palomaoliveiracilios/">
     <meta property="og:type" content="website">
 
@@ -57,6 +57,18 @@
       }
       .hero-overlay {
         background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+      }
+      /* Garante que o vídeo não seja cortado em telas pequenas */
+      @media (max-width: 768px) {
+        .hero-section-video {
+          object-fit: contain !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          left: 0;
+          top: 0;
+          position: absolute;
+          background: #000;
+        }
       }
       .glass-nav {
         background: rgba(255, 255, 255, 0.95);
@@ -167,7 +179,7 @@
     <!-- Hero Section -->
     <section id="home" class="relative h-[85vh] md:h-screen flex items-center justify-center">
       <div class="absolute inset-0 z-0">
-        <video class="w-full h-full object-cover opacity-90 md:opacity-80 transition-all duration-500" autoplay muted loop>
+        <video class="w-full h-full object-cover opacity-90 md:opacity-80 transition-all duration-500 hero-section-video" autoplay muted loop>
           <source src="https://i.imgur.com/IW1Jpr6.mp4" type="video/mp4">
         </video>
         <div class="hero-overlay absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-black/30"></div>
@@ -688,4 +700,3 @@
     </script>
   </body>
 </html>
-
